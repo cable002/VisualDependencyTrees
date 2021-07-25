@@ -1,0 +1,71 @@
+<ion-header>
+  <title>nn</title>
+  <ion-toolbar>
+    <ion-title>First Visual Dependency Tree for Google Syntax</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-input name="tb1"  maxlength="300" type="text" [(ngModel)]="userInput"   placeholder="Type any text"   clearInput  autofocus="true" autocomplete="on" autocorrect="on"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-md-12>
+        <ion-button expand="" (click)="getGoogleSyntax()">
+          Get Syntax
+        </ion-button>
+      </ion-col>
+      <ion-col  col-md-12 >
+        <ion-button  (click)="clearAll()">
+          Clear
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row justify-content-center class="center" class="scrollXCanvas" >
+      <ion-col>
+    <canvas #treeCanvas  ></canvas>
+      </ion-col>
+    </ion-row>
+
+    <ion-row justify-content-center class="center">
+      <ion-col *ngFor="let token of syntaxEntryArray; let i = index">
+        {{token.dElabel}} {{token.dEheadTokenIndex}}
+      </ion-col>
+    </ion-row>
+    <ion-row justify-content-center class="center">
+      <ion-col *ngFor="let token of syntaxEntryArray; let i = index">
+        {{token.OriginalWord}}
+      </ion-col>
+    </ion-row>
+    <ion-row justify-content-center class="center">
+      <ion-col *ngFor="let token of syntaxEntryArray; let i = index">
+        {{token.lemmaTextCoalesce}}
+      </ion-col>
+    </ion-row>
+    <ion-row justify-content-center class="center">
+      <ion-col *ngFor="let token of syntaxEntryArray; let i = index">
+        {{token.pos}}
+      </ion-col>
+    </ion-row>
+    <ion-row justify-content-center class="center smaller">
+      <ion-col *ngFor="let token of syntaxEntryArray; let i = index">
+        <!-- {{token.allKnownOthersCoalesce[0]}}<br/>{{token.allKnownOthersCoalesce[1]}} -->
+        <ion-list   *ngFor="let attrib of token.allKnownOthersCoalesce">
+          <!-- <ion-item> -->
+            <ion-label>{{attrib}}</ion-label><br/>
+          <!-- </ion-item> -->
+        </ion-list> 
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+  
+
+
+
+</ion-content>
