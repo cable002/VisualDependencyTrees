@@ -268,7 +268,7 @@ export class FirstTreePage implements OnInit {
     this.clearCanvas();
     this.syntaxEntryArray = [];
 
-    let ApiKey:string = "PLACE YOUR Google Cloud API key here"; // "AIzaSyAOZwMf6EDuuidV_x1IXkaxdsBMmd37Zms";
+    let ApiKey:string = "PLACE YOUR Google Cloud API key here"; 
     console.log(this.jsonObject); //We should have the sample response - added from constructor
 
     if(this.userInput.length < 2) return;
