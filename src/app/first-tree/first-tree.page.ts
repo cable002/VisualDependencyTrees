@@ -1,11 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-//import { Observable } from 'rxjs-observable';
 import {Observable,of, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { SyntaxEntry } from './syntax';
-
-//import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
-
+import { SyntaxEntry } from './syntax'; 
 
 @Component({
   selector: 'app-first-tree',
@@ -20,20 +16,23 @@ export class FirstTreePage implements OnInit {
   ctx:any;  //global canvas context
 
   userInput:string;
-  result:string;
+  result:any;
   obs: Observable<any>;
   syntaxEntryArray:SyntaxEntry[];
 
   canvasWidth:number;
   minimumPartition:number;
   initialY:number;
+  jsonObject:any;
 
 
-  constructor(public httpClient: HttpClient) { //  speechRecognition: SpeechRecognition) {
+  constructor(public httpClient: HttpClient) { 
     this.userInput = "";
-    this.result = "";
+    this.result = {};
     this.initialY = 85;
-   }
+    this.loadJsonSampleResponse();
+
+  }
 
   ngOnInit() {
     this.userInput = "I came to this place, and she did too.";
@@ -261,7 +260,6 @@ export class FirstTreePage implements OnInit {
 
   clearCanvas()
   {
-    // wrong: this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height); 
     this.ctx.clearRect(0, 0, this.ctx.width, this.ctx.height); // ???
     
   }
@@ -269,17 +267,25 @@ export class FirstTreePage implements OnInit {
   getGoogleSyntax() {
     this.clearCanvas();
     this.syntaxEntryArray = [];
+
+    let ApiKey:string = "PLACE YOUR Google Cloud API key here"; // "AIzaSyAOZwMf6EDuuidV_x1IXkaxdsBMmd37Zms";
+    console.log(this.jsonObject); //We should have the sample response - added from constructor
+
     if(this.userInput.length < 2) return;
-      let ApiKey:string =  "AIzaSyAOZwMf6EDuuidV_x1IXkaxdsBMmd37Zms"; 
       let requestBody:any = {"encodingType": "UTF8", "document": {"language": "en", "type": "PLAIN_TEXT", "content": this.userInput}};
       let obj:any = {};
 
-      this.obs = this.httpClient.post('https://language.googleapis.com/v1/documents:analyzeSyntax?key=' + ApiKey, requestBody);
-      this.obs
-      .subscribe(data => {  
-        this.result = JSON.stringify(data);
-        let sentArray:any[] = data.sentences;
-        let tokenArray:any[] = data.tokens;
+      //UNCOMMENT THE FOLLOWING API call WHEN YOU HAVE YOUR OWN KEY
+      //this.obs = this.httpClient.post('https://language.googleapis.com/v1/documents:analyzeSyntax?key=' + ApiKey, requestBody);
+      // this.obs
+      //.subscribe(data => {  
+      //this.result = JSON.stringify(data);
+
+        //let sentArray:any[] = data.sentences;
+        //let tokenArray:any[] = data.tokens;
+        let sentArray:any[] = this.jsonObject.sentences;
+        let tokenArray:any[] = this.jsonObject.tokens;
+
         let syntaxEntry:SyntaxEntry;
         for(var j = 0; j < tokenArray.length; j++){
           syntaxEntry =  new SyntaxEntry();
@@ -326,8 +332,9 @@ export class FirstTreePage implements OnInit {
         this.canvasWidth = 150*this.syntaxEntryArray.length;
         this.drawVisualTree();
   
-      },
-      error => alert('Error in subscribe of syntax call: ' + error.message) ) 
+      //ALSO UNCOMMENT THE FOLLOWING ENDING to the subscribe observable
+      //},
+      //error => alert('Error in subscribe of syntax call: ' + error.message) ) 
 
   } //end getGoogleSyntax
 
@@ -336,6 +343,298 @@ export class FirstTreePage implements OnInit {
     this.result = "";
     this.syntaxEntryArray = [];
     this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+  }
+
+  loadJsonSampleResponse()
+  {
+    this.jsonObject = { 
+      "sentences": [
+      {
+        "text": {
+          "content": "I came to this place, and she did too.",
+          "beginOffset": 0
+        }
+      }
+    ],
+    "tokens": [
+      {
+        "text": {
+          "content": "I",
+          "beginOffset": 0
+        },
+        "partOfSpeech": {
+          "tag": "PRON",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "NOMINATIVE",
+          "form": "FORM_UNKNOWN",
+          "gender": "GENDER_UNKNOWN",
+          "mood": "MOOD_UNKNOWN",
+          "number": "SINGULAR",
+          "person": "FIRST",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "TENSE_UNKNOWN",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 1,
+          "label": "NSUBJ"
+        },
+        "lemma": "I"
+      },
+      {
+        "text": {
+          "content": "came",
+          "beginOffset": 2
+        },
+        "partOfSpeech": {
+          "tag": "VERB",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "CASE_UNKNOWN",
+          "form": "FORM_UNKNOWN",
+          "gender": "GENDER_UNKNOWN",
+          "mood": "INDICATIVE",
+          "number": "NUMBER_UNKNOWN",
+          "person": "PERSON_UNKNOWN",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "PAST",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 1,
+          "label": "ROOT"
+        },
+        "lemma": "come"
+      },
+      {
+        "text": {
+          "content": "to",
+          "beginOffset": 7
+        },
+        "partOfSpeech": {
+          "tag": "ADP",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "CASE_UNKNOWN",
+          "form": "FORM_UNKNOWN",
+          "gender": "GENDER_UNKNOWN",
+          "mood": "MOOD_UNKNOWN",
+          "number": "NUMBER_UNKNOWN",
+          "person": "PERSON_UNKNOWN",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "TENSE_UNKNOWN",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 1,
+          "label": "PREP"
+        },
+        "lemma": "to"
+      },
+      {
+        "text": {
+          "content": "this",
+          "beginOffset": 10
+        },
+        "partOfSpeech": {
+          "tag": "DET",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "CASE_UNKNOWN",
+          "form": "FORM_UNKNOWN",
+          "gender": "GENDER_UNKNOWN",
+          "mood": "MOOD_UNKNOWN",
+          "number": "SINGULAR",
+          "person": "PERSON_UNKNOWN",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "TENSE_UNKNOWN",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 4,
+          "label": "DET"
+        },
+        "lemma": "this"
+      },
+      {
+        "text": {
+          "content": "place",
+          "beginOffset": 15
+        },
+        "partOfSpeech": {
+          "tag": "NOUN",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "CASE_UNKNOWN",
+          "form": "FORM_UNKNOWN",
+          "gender": "GENDER_UNKNOWN",
+          "mood": "MOOD_UNKNOWN",
+          "number": "SINGULAR",
+          "person": "PERSON_UNKNOWN",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "TENSE_UNKNOWN",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 2,
+          "label": "POBJ"
+        },
+        "lemma": "place"
+      },
+      {
+        "text": {
+          "content": ",",
+          "beginOffset": 20
+        },
+        "partOfSpeech": {
+          "tag": "PUNCT",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "CASE_UNKNOWN",
+          "form": "FORM_UNKNOWN",
+          "gender": "GENDER_UNKNOWN",
+          "mood": "MOOD_UNKNOWN",
+          "number": "NUMBER_UNKNOWN",
+          "person": "PERSON_UNKNOWN",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "TENSE_UNKNOWN",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 1,
+          "label": "P"
+        },
+        "lemma": ","
+      },
+      {
+        "text": {
+          "content": "and",
+          "beginOffset": 22
+        },
+        "partOfSpeech": {
+          "tag": "CONJ",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "CASE_UNKNOWN",
+          "form": "FORM_UNKNOWN",
+          "gender": "GENDER_UNKNOWN",
+          "mood": "MOOD_UNKNOWN",
+          "number": "NUMBER_UNKNOWN",
+          "person": "PERSON_UNKNOWN",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "TENSE_UNKNOWN",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 1,
+          "label": "CC"
+        },
+        "lemma": "and"
+      },
+      {
+        "text": {
+          "content": "she",
+          "beginOffset": 26
+        },
+        "partOfSpeech": {
+          "tag": "PRON",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "NOMINATIVE",
+          "form": "FORM_UNKNOWN",
+          "gender": "FEMININE",
+          "mood": "MOOD_UNKNOWN",
+          "number": "SINGULAR",
+          "person": "THIRD",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "TENSE_UNKNOWN",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 8,
+          "label": "NSUBJ"
+        },
+        "lemma": "she"
+      },
+      {
+        "text": {
+          "content": "did",
+          "beginOffset": 30
+        },
+        "partOfSpeech": {
+          "tag": "VERB",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "CASE_UNKNOWN",
+          "form": "FORM_UNKNOWN",
+          "gender": "GENDER_UNKNOWN",
+          "mood": "INDICATIVE",
+          "number": "NUMBER_UNKNOWN",
+          "person": "PERSON_UNKNOWN",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "PAST",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 1,
+          "label": "CONJ"
+        },
+        "lemma": "do"
+      },
+      {
+        "text": {
+          "content": "too",
+          "beginOffset": 34
+        },
+        "partOfSpeech": {
+          "tag": "ADV",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "CASE_UNKNOWN",
+          "form": "FORM_UNKNOWN",
+          "gender": "GENDER_UNKNOWN",
+          "mood": "MOOD_UNKNOWN",
+          "number": "NUMBER_UNKNOWN",
+          "person": "PERSON_UNKNOWN",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "TENSE_UNKNOWN",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 8,
+          "label": "ADVMOD"
+        },
+        "lemma": "too"
+      },
+      {
+        "text": {
+          "content": ".",
+          "beginOffset": 37
+        },
+        "partOfSpeech": {
+          "tag": "PUNCT",
+          "aspect": "ASPECT_UNKNOWN",
+          "case": "CASE_UNKNOWN",
+          "form": "FORM_UNKNOWN",
+          "gender": "GENDER_UNKNOWN",
+          "mood": "MOOD_UNKNOWN",
+          "number": "NUMBER_UNKNOWN",
+          "person": "PERSON_UNKNOWN",
+          "proper": "PROPER_UNKNOWN",
+          "reciprocity": "RECIPROCITY_UNKNOWN",
+          "tense": "TENSE_UNKNOWN",
+          "voice": "VOICE_UNKNOWN"
+        },
+        "dependencyEdge": {
+          "headTokenIndex": 1,
+          "label": "P"
+        },
+        "lemma": "."
+      }
+    ],
+    "language": "en"};
+
   }
 
 
@@ -348,7 +647,7 @@ class point {
 
 class partOfSpeechAttribs {
   index:number; //order in +y display order`
-  name:string; //ie., mood
+  name:string; //eg., mood, case
   value:string; // may have '_UNKNOWN'
 
 }

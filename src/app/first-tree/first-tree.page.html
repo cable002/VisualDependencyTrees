@@ -1,5 +1,4 @@
 <ion-header>
-  <title>nn</title>
   <ion-toolbar>
     <ion-title>First Visual Dependency Tree for Google Syntax</ion-title>
   </ion-toolbar>
@@ -32,40 +31,6 @@
       </ion-col>
     </ion-row>
 
-    <ion-row justify-content-center class="center">
-      <ion-col *ngFor="let token of syntaxEntryArray; let i = index">
-        {{token.dElabel}} {{token.dEheadTokenIndex}}
-      </ion-col>
-    </ion-row>
-    <ion-row justify-content-center class="center">
-      <ion-col *ngFor="let token of syntaxEntryArray; let i = index">
-        {{token.OriginalWord}}
-      </ion-col>
-    </ion-row>
-    <ion-row justify-content-center class="center">
-      <ion-col *ngFor="let token of syntaxEntryArray; let i = index">
-        {{token.lemmaTextCoalesce}}
-      </ion-col>
-    </ion-row>
-    <ion-row justify-content-center class="center">
-      <ion-col *ngFor="let token of syntaxEntryArray; let i = index">
-        {{token.pos}}
-      </ion-col>
-    </ion-row>
-    <ion-row justify-content-center class="center smaller">
-      <ion-col *ngFor="let token of syntaxEntryArray; let i = index">
-        <!-- {{token.allKnownOthersCoalesce[0]}}<br/>{{token.allKnownOthersCoalesce[1]}} -->
-        <ion-list   *ngFor="let attrib of token.allKnownOthersCoalesce">
-          <!-- <ion-item> -->
-            <ion-label>{{attrib}}</ion-label><br/>
-          <!-- </ion-item> -->
-        </ion-list> 
-      </ion-col>
-    </ion-row>
-
   </ion-grid>
-  
-
-
 
 </ion-content>
